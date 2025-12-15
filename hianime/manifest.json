@@ -22,12 +22,12 @@
         "default": "https://hianime.to",
         "options": [
           { "label": "Hianime (Default)", "value": "https://hianime.to" },
-          { "label": "Hianimez (.is)", "value": "https://hianimez.is/" },
-          { "label": "Hianime (.nz)", "value": "https://hianime.nz/" },
-          { "label": "Hianime (.bz)", "value": "https://hianime.bz/" },
-          { "label": "Hianime (.pe)", "value": "https://hianime.pe/" },
-          { "label": "Hianime (.cx)", "value": "https://hianime.cx/" },
-          { "label": "Hianime (.do)", "value": "https://hianime.do/" }
+          { "label": "Hianimez (.is)", "value": "https://hianimez.is" },
+          { "label": "Hianime (.nz)", "value": "https://hianime.nz" },
+          { "label": "Hianime (.bz)", "value": "https://hianime.bz" },
+          { "label": "Hianime (.pe)", "value": "https://hianime.pe" },
+          { "label": "Hianime (.cx)", "value": "https://hianime.cx" },
+          { "label": "Hianime (.do)", "value": "https://hianime.do" }
         ]
       }
     ]
