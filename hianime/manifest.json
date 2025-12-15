@@ -19,7 +19,7 @@
         "name": "domain",
         "label": "Preferred Domain",
         "type": "select",
-        "default": "https://animeunity.so",
+        "default": "https://hianime.to",
         "options": [
           { "label": "Hianime (Default)", "value": "https://hianime.to" },
           { "label": "Hianimez (.is)", "value": "https://hianimez.is/" },
