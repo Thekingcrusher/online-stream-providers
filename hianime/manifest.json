@@ -3,13 +3,13 @@
   "name": "Hianime",
   "icon": "https://raw.githubusercontent.com/Thekingcrusher/online-stream-providers/refs/heads/main/hianime/logo.png",
   "description": "HiAnime is an online stream provider for both sub and dub with soft subs.",
-  "manifestURI": "https://raw.githubusercontent.com/pal-droid/online-stream-providers/refs/heads/add-hianime-mirrors/hianime/manifest.json",
-  "version": "1.1.0",
+  "manifestURI": "https://raw.githubusercontent.com/Thekingcrusher/online-stream-providers/refs/heads/main/hianime/manifest.json",
+  "version": "1.1.1",
   "author": "Thekingcrusher",
   "type": "onlinestream-provider",
   "language": "typescript",
-  "lang": "multi",
-  "payloadURI": "https://raw.githubusercontent.com/pal-droid/online-stream-providers/refs/heads/add-hianime-mirrors/hianime/provider.ts",
+  "lang": "en",
+  "payloadURI": "https://raw.githubusercontent.com/Thekingcrusher/online-stream-providers/refs/heads/main/hianime/provider.ts",
 
   "userConfig": {
     "requiresConfig": false,
@@ -17,17 +17,17 @@
     "fields": [
       {
         "name": "domain",
-        "label": "Preferred Domain",
+        "label": "Domain Selection",
         "type": "select",
         "default": "https://hianime.to",
         "options": [
-          { "label": "Hianime (Default)", "value": "https://hianime.to" },
-          { "label": "Hianimez (.is)", "value": "https://hianimez.is" },
-          { "label": "Hianime (.nz)", "value": "https://hianime.nz" },
-          { "label": "Hianime (.bz)", "value": "https://hianime.bz" },
-          { "label": "Hianime (.pe)", "value": "https://hianime.pe" },
-          { "label": "Hianime (.cx)", "value": "https://hianime.cx" },
-          { "label": "Hianime (.do)", "value": "https://hianime.do" }
+          { "label": "hianime.to", "value": "https://hianime.to" },
+          { "label": "hianimez.is", "value": "https://hianimez.is" },
+          { "label": "hianime.nz", "value": "https://hianime.nz" },
+          { "label": "hianime.bz", "value": "https://hianime.bz" },
+          { "label": "hianime.pe", "value": "https://hianime.pe" },
+          { "label": "hianime.cx", "value": "https://hianime.cx" },
+          { "label": "hianime.do", "value": "https://hianime.do" }
         ]
       }
     ]
