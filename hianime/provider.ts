@@ -15,7 +15,7 @@ class Provider {
     const normalize = (title) => {
       return (title || "")
         .toLowerCase()
-        .replace(/(season|cour|part)/g, "") // strip keywords
+        .replace(/(season|cour|part|the animation|the movie|movie)/g, "") // strip keywords
         .replace(/\d+(st|nd|rd|th)/g, (m) => m.replace(/st|nd|rd|th/, "")) // remove ordinal suffixes
         .replace(/[^a-z0-9]+/g, "") // remove non-alphanumeric
         .replace(/(?<!i)ii(?!i)/g, "2") // replace II with 2
@@ -69,7 +69,7 @@ class Provider {
       const html  = reply.html;
     
       // Match <a href="/something-id" class="nav-item"> but exclude bottom links
-      const regex = /<a href="\/([^"]+)" class="nav-item">[\s\S]*?<h3 class="film-name"[^>]*data-jname="([^"]+)"[^>]*>([^<]+)<\/h3>[\s\S]*?<div class="film-infor">\s*<span>([^<]+)<\/span>/g;
+      const regex = /<a href="\/([^"]+)" class="nav-item">[\s\S]*?<h3 class="film-name"[^>]*data-jname="([^"]+)"[^>]*>([^<]+)<\/h3>[\s\S]*?<div class="film-infor">\s*<span>([^<]+)<\/span>\s*<i[^>]*><\/i>\s*([^<]+)\s*<i[^>]*><\/i>/g;
 
       const monthMap: Record<string, number> = {
         Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
@@ -84,6 +84,7 @@ class Provider {
           const jname = m[2]?.trim();
           const title = m[3]?.trim();
           const dateStr = m[4].trim(); // e.g. "Jul 4, 2025"
+          const format = m[5].trim().toUpperCase();
 
           let startDate = { year: 0, month: 0, day: 0 };
           const dateMatch = dateStr.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})/);
@@ -105,78 +106,77 @@ class Provider {
             normTitleJP: normalize(decodeHtmlEntities(jname)),
             normTitle: normalize(decodeHtmlEntities(title)),
             startDate,
+            format,
           };
         })
         .filter(Boolean); // remove null entries
     
       return matches;
     };
-  
+
     // Base search
     const url = `${this.baseUrl}/ajax/search/suggest?keyword=${encodeURIComponent(query.query)}`;
+    console.log(url)
+
     const matches = await fetchMatches(url);
   
     if (matches.length === 0) return [];
 
     // Filter results prioritizing from -> match title & start year/month -> match title & start year
-    let filtered = matches.filter(m => {
-      const titleMatch =
-        m.normTitle === targetNorm ||
-        m.normTitleJP === targetNormJP;
+    const exactTitle = (m) =>
+      m.normTitle === targetNorm ||
+      m.normTitleJP === targetNormJP;
+    
+    const looseTitle = (m) =>
+      levenshteinSimilarity(m.normTitle, targetNorm) > 0.8 ||
+      levenshteinSimilarity(m.normTitleJP, targetNormJP) > 0.8;
 
-      const dateMatch =
-        (m.startDate?.year === start?.year) &&
-        (m.startDate?.month === start?.month);
+    const looserTitle = (m) =>
+      m.normTitle.includes(targetNorm) ||
+      m.normTitleJP.includes(targetNormJP) ||
+      targetNorm.includes(m.normTitle) ||
+      targetNormJP.includes(m.normTitleJP) ||
+      levenshteinSimilarity(m.normTitle, targetNorm) > 0.6 ||
+      levenshteinSimilarity(m.normTitleJP, targetNormJP) > 0.6;
+    
+    const dateYM = (m) =>
+      m.startDate?.year === start?.year &&
+      m.startDate?.month === start?.month;
+    
+    const dateY = (m) =>
+      m.startDate?.year === start?.year;
 
-      return titleMatch && dateMatch;
-    });
+    const exactFormat = (m) =>
+      m.format === query.media.format.toUpperCase();
 
-    if (!filtered.length) {
-      filtered = matches.filter(m => {
-        const titleMatch =
-          m.normTitle === targetNorm ||
-          m.normTitleJP === targetNormJP;
+    const matchTiers = [
+      (m) => exactTitle(m) && dateYM(m) && exactFormat(m),
+      (m) => exactTitle(m) && dateY(m) && exactFormat(m),
+      (m) => looseTitle(m) && dateYM(m) && exactFormat(m),
+      (m) => looseTitle(m) && dateY(m) && exactFormat(m),
+    ];
+    
+    let filtered: any[] = [];
+    
+    for (let page = 1; page <= 7; page++) {
+      const pageUrl =
+        page === 1
+          ? url
+          : `${url}&page=${page}`;
+    
+      const pageMatches = await fetchMatches(pageUrl);
+    
+      if (!pageMatches.length) break;
 
-        const dateMatch =
-          (m.startDate?.year === start?.year)
-        
-        return titleMatch && dateMatch;
-      });
-    }
-
-    if (!filtered.length) {
-      filtered = matches.filter(m => {
-        const titleMatch =
-          m.normTitle.includes(targetNorm) ||
-          m.normTitleJP.includes(targetNormJP) ||
-          targetNorm.includes(m.normTitle) ||
-          targetNormJP.includes(m.normTitleJP) ||
-          levenshteinSimilarity(m.normTitle, targetNorm) > 0.7 ||
-          levenshteinSimilarity(m.normTitleJP, targetNormJP) > 0.7;
-
-        const dateMatch =
-          (m.startDate?.year === start?.year) &&
-          (m.startDate?.month === start?.month);
-        
-        return titleMatch && dateMatch;
-      });
-    }
-
-    if (!filtered.length) {
-      filtered = matches.filter(m => {
-        const titleMatch =
-          m.normTitle.includes(targetNorm) ||
-          m.normTitleJP.includes(targetNormJP) ||
-          targetNorm.includes(m.normTitle) ||
-          targetNormJP.includes(m.normTitleJP) ||
-          levenshteinSimilarity(m.normTitle, targetNorm) > 0.7 ||
-          levenshteinSimilarity(m.normTitleJP, targetNormJP) > 0.7;
-
-        const dateMatch =
-          (m.startDate?.year === start?.year)
-        
-        return titleMatch && dateMatch;
-      });
+      const hasLoose = pageMatches.some(looserTitle);
+      if (!hasLoose) break;
+    
+      for (const tier of matchTiers) {
+        filtered = pageMatches.filter(tier);
+        if (filtered.length) break;
+      }
+    
+      if (filtered.length) break;
     }
   
     // Return results
@@ -276,6 +276,9 @@ class Provider {
 
   async findEpisodeServer(episode: EpisodeDetails, _server: string): Promise<EpisodeServer> {
     const [id, subOrDub] = episode.id.split("/");
+    const allowedTypes =
+      subOrDub === "sub" ? ["sub", "raw"] : [subOrDub];
+    const typePattern = allowedTypes.join("|");
     let serverName = _server !== "default" ? _server : "HD-1";
     
     // Fetch server list
@@ -287,12 +290,12 @@ class Provider {
 
     // Regex to match the right block (sub or dub) and find the server by name
     const regex = new RegExp(
-        `<div[^>]*class="item server-item"[^>]*data-type="${subOrDub}"[^>]*data-id="(\\d+)"[^>]*>\\s*<a[^>]*>\\s*${serverName}\\s*</a>`,
+        `<div[^>]*class="item server-item"[^>]*data-type="${typePattern}"[^>]*data-id="(\\d+)"[^>]*>\\s*<a[^>]*>\\s*${serverName}\\s*</a>`,
         "i"
     );
 
     const match = regex.exec(serverHtml);
-    if (!match) throw new Error(`Server "${serverName}" (${subOrDub}) not found`);
+    if (!match) throw new Error(`Server "${serverName}" (${allowedTypes.join("/")}) not found`);
 
     const serverId = match[1];
 
