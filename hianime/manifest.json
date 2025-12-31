@@ -1,10 +1,10 @@
 {
   "id": "hianime",
-  "name": "Hianime",
+  "name": "HiAnime",
   "icon": "https://raw.githubusercontent.com/Thekingcrusher/online-stream-providers/refs/heads/main/hianime/logo.png",
   "description": "HiAnime is an online stream provider for both sub and dub with soft subs.",
   "manifestURI": "https://raw.githubusercontent.com/Thekingcrusher/online-stream-providers/refs/heads/main/hianime/manifest.json",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Thekingcrusher",
   "type": "onlinestream-provider",
   "language": "typescript",
