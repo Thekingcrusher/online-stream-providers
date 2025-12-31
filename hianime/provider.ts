@@ -297,7 +297,7 @@ class Provider {
     const match = regex.exec(serverHtml);
     if (!match) throw new Error(`Server "${serverName}" (${allowedTypes.join("/")}) not found`);
 
-    const serverId = match[1];
+    const serverId = match[2];
 
     // Fetch source embed
     const sourcesJson = await fetch(`${this.baseUrl}/ajax/v2/episode/sources?id=${serverId}`, {
