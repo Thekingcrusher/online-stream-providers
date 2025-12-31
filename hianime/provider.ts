@@ -290,7 +290,7 @@ class Provider {
 
     // Regex to match the right block (sub or dub) and find the server by name
     const regex = new RegExp(
-        `<div[^>]*class="item server-item"[^>]*data-type="${typePattern}"[^>]*data-id="(\\d+)"[^>]*>\\s*<a[^>]*>\\s*${serverName}\\s*</a>`,
+        `<div[^>]*class="item server-item"[^>]*data-type="(${typePattern})"[^>]*data-id="(\\d+)"[^>]*>\\s*<a[^>]*>\\s*${serverName}\\s*</a>`,
         "i"
     );
 
