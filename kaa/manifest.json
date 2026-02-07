@@ -1,7 +1,7 @@
 {
   "id":"kaa",
   "name":"KickAssAnime",
-  "version":"1.0.3",
+  "version":"1.0.4",
   "manifestURI":"https://raw.githubusercontent.com/Thekingcrusher/online-stream-providers/refs/heads/main/kaa/manifest.json",
   "language":"typescript",
   "type":"onlinestream-provider",
@@ -18,8 +18,8 @@
         "name":"domain",
         "label":"Domain Selection",
         "options":[
-          {"value":"https://kickass-anime.ro","label":"kickass-anime.ro"},
-          {"value":"https://kickass-anime.ru","label":"kickass-anime.ru"}
+          {"value":"https://kaa.lt","label":"kaa.lt"},
+          {"value":"https://kickassanime.cx","label":"kickass-anime.cx"}
         ],
         "default":"https://kickass-anime.ro"}
     ]},
